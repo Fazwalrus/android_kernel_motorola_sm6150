@@ -246,7 +246,7 @@ GCOV_PROFILE := y
 endif
 
 # Module information used by KBuild framework
-obj-$(CONFIG_SND_SOC_QDSP6V2) += platform_dlkm.o
+#obj-$(CONFIG_SND_SOC_QDSP6V2) += platform_dlkm.o
 platform_dlkm-y := $(PLATFORM_OBJS)
 
 obj-$(CONFIG_SND_SOC_MACHINE_SDM845) += machine_dlkm.o
