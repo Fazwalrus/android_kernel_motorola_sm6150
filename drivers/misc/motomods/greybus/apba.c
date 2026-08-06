@@ -2472,6 +2472,22 @@ static int apba_ctrl_probe(struct platform_device *pdev)
 
 	kobject_uevent(&pdev->dev.kobj, KOBJ_ADD);
 
+	/*
+	 * ModService hardcodes /sys/devices/soc/0.apba_ctrl/unipro_mid
+	 * (pre-4.14-kernel sysfs layout) to read back the APBA identity
+	 * after mmi,apba-unipro-mid etc. are set. On this kernel the real
+	 * path is /sys/devices/platform/soc/0.apba_ctrl/, so without this
+	 * link the read ENOENTs and the app aborts its APBA update with
+	 * "code=19", leaving mods_ap/greybus1 without a real interface node.
+	 */
+	{
+		struct kobject *soc_compat_kobj =
+			kobject_create_and_add("soc", platform_bus.kobj.parent);
+		if (soc_compat_kobj)
+			sysfs_create_link(soc_compat_kobj, &pdev->dev.kobj,
+					   "0.apba_ctrl");
+	}
+
 	return 0;
 
 unregister_slave_ctrl:
